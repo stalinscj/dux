@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Dux | Inicio</title>
+</head>
+<body>
+	<h1>Pantalla Principal</h1>
+
+	<script>
+	    urlSocket = 'ws://' + window.location.host + '/ws/camara/principal/';
+	    var camPrincipalSocket = new WebSocket(urlSocket);
+
+	    camPrincipalSocket.onmessage = function(e) {
+	        var data = JSON.parse(e.data);
+	        var message = data['message'];
+	        console.log("Socket:" + message);
+	        alert("Socket: " + message);
+	    };
+
+	    camPrincipalSocket.onclose = function(e) {
+	        console.error('CamcamPrincipal socket closed unexpectedly');
+	    };
+	</script>
+
+</body>
+</html>
