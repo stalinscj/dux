@@ -1,1 +1,6 @@
 /_dux_test
+__pycache__
+*.pyc
+/media/
+/static/
+db.sqlite3
