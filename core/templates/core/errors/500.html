@@ -1,0 +1,57 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block title %}Dux | Error 500{% endblock title %}
+
+{% block meta_description %}Error 500: Error Interno.{% endblock meta_description %}
+
+{% block custom_css %}
+	<style type="text/css">
+		body {
+			background-color: #1E5799;
+		}
+
+		.contenido {
+			padding-top: 85px; 
+			padding-bottom: 60px;
+			background-color: #FFF;
+		}
+
+		.btn {
+			background-color:rgba(30, 87, 153, 0.9);
+			color: #FFF;
+		}
+
+		.btn:hover{
+			background-color:rgba(30, 87, 153, 1);
+			color: #FFF;
+		}
+
+		.fixed-top {
+			background-color:rgba(0, 0, 0, 0.9); !important;
+			transition: background-color 900ms linear;
+		}
+	</style>
+{% endblock custom_css %}
+
+{% block content %}
+	<div class=" contenido">
+		<div class="col-md-12">
+			<div class="text-center">
+				<h1>Error 500</h1>
+				<h2>Error del Servidor</h2>
+				<p>
+					Parece que ha ocurrido un error mientras se procesaba su petición <i class="fa fa-frown-o" aria-hidden="true"></i>
+				</p>
+				<div>
+					<a href="{% url 'home' %}" class="btn btn-lg btn-primary1 rounded-0"><i class="fa fa-home" aria-hidden="true"></i> Ir al Inicio</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock content %}
+
+{% block custom_js %}
+	
+{% endblock custom_js %}

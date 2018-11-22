@@ -1,0 +1,49 @@
+body {
+	background: #FFF;
+}
+
+.firma{
+	font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial, cursive;
+	color: #FFF;
+	font-weight: 900;
+	letter-spacing: 1px;
+	margin-right: 12px;
+	margin-left: 12px;
+}
+
+footer {
+	background: #1E5799;
+	bottom: 0;
+	color: #FFF;
+	position: fixed;
+	width: 100%;
+}
+
+.navbar {
+	background-color:#1E5799;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.navbar a.nav-link {
+	font-weight: bold;
+	color: #FFF !important;
+	letter-spacing: 0.6px;
+	padding-right: 0;
+	padding-left: 0;
+	margin-right: 12px;
+	margin-left: 12px;
+	transition: all .3s ease-in-out;
+	webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-ms-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+}
+
+.navbar .nav-link:hover {
+	text-decoration: underline;
+}
+
