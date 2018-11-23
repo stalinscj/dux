@@ -14,8 +14,8 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-6 my-2 text-center">
-				<img class="img-fluid img-thumbnail mb-2" src="{% static 'core/img/live.png' %}" alt="Live">
-				<button class="btn btn-success"><b>Iniciar</b></button>
+				<img id="img-live" class="img-fluid img-thumbnail mb-2" src="{% static 'core/img/live.png' %}" alt="Live">
+				<button class="btn btn-success" onclick="on_off_streaming(this)" estado="off"><b>Iniciar</b></button>
 				<button class="btn btn-primary">No Sé</button>
 				<button class="btn btn-primary">Que</button>
 				<button class="btn btn-primary">Colocar</button>
@@ -52,5 +52,5 @@
 {% endblock content %}
 
 {% block custom_js %}
-	<!-- <script src="{% static 'core/js/home.js' %}"></script> -->
+	<script src="{% static 'core/js/home.js' %}"></script>
 {% endblock custom_js %}

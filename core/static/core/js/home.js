@@ -1,70 +1,64 @@
-var flag_skill = false;
+var urlSocket = 'ws://' + window.location.host + '/ws/camara/';
+var camSocket = null;
+var conectado = false;
+
 $(function () {
-	var $window = $(window);
+	conectar();
+});
 
-	function animar_skill_bar() {
+function conectar() {
+	if(!conectado){
+		camSocket = new WebSocket(urlSocket);
+		conectado = true;
+		camSocket.onmessage = function(e) {
+			var data = JSON.parse(e.data);
+			recibir(data);
+		};
 
-		var elementTop = $("#skillbar-wrap").offset().top;
-		var elementBottom = elementTop + $("#skillbar-wrap").outerHeight();
-		var viewportTop = $(window).scrollTop();
-		var viewportBottom = viewportTop + $(window).height();
+		camSocket.onclose = function(e) {
+			conectado = false;
+			alert('Socket cerrado!');
+		};
+	}
+}
 
-		if (elementBottom > viewportTop && elementTop < viewportBottom ){
-			if (!flag_skill){
-				$('.skillbar').skillBars({
-					from: 0,
-					speed: 4000, 
-					interval: 100,
-				}); 
-				flag_skill = true;
-			}
-		}else{
-			flag_skill = false;
-		}
+function enviar(data) {
+	camSocket.send(JSON.stringify({
+		"data": data
+	}));
+}
+
+function recibir(data) {
+	var tipo = data['tipo'];
+	if(tipo=="frame"){
+		var img_src = data['img_src']
+		$("#img-live").attr('src', img_src);
 	}
 
-	particlesJS.load('particles-js', particles_url_config, function() {
-		/* console.log('callback - particles.js config loaded');*/
-	});
+	// console.log("Socket:" + message);
+}
 
-	$('.fixed-top .nav-link, .fixed-top .navbar-brand, .jumbotron .btn').click(function() {
-		var sectionTo = $(this).attr('href');
-		$('html, body').animate({
-			scrollTop: $(sectionTo).offset().top
-		}, 1500);
-	});
+function on_off_streaming(btn){
+	var btnOnOff = $(btn);
+	
+	if (btnOnOff.attr('estado') == 'off'){
+		btnOnOff.attr('estado', 'on');
+		btnOnOff.text('Detener');
+		btnOnOff.removeClass('btn-success');
+		btnOnOff.addClass('btn-danger');
 
-	var typed = new Typed('.typed', {
-		strings: ['Analista &amp; Desarrollador', 'Analista de Proyectos de IT', 'Desarrollador: Web (Backend)', 'Desarrollador: Desktop', 'Web: HTML, CSS y JS', 'Web (FW): Bootstrap y JQuery', 'Web: PHP y Python', 'Web (FW): Laravel, Zend y Django', 'Desktop: C, C++, Java y Python', 'SGBD: PostgreSQL y MySQL', ],
-		typeSpeed: 50,
-		backSpeed: 40,
-		loop: true
-	});
+		enviar("on");
+	}else{
+		btnOnOff.attr('estado', 'off');
+		btnOnOff.text('Iniciar');
+		btnOnOff.removeClass('btn-danger');
+		btnOnOff.addClass('btn-success');
 
-	animar_skill_bar()
-	$(window).on('resize scroll',animar_skill_bar);
+		enviar("off");
+	}
+}
 
-	$('.proyecto-filtros .btn').click(function() {
-		$(".proyecto-filtros").find(".active").removeClass("active");
-		$(this).addClass("active");
-	});
-
-	var proyectos_items = $('.proyecto-items').isotope({
-		itemSelector: '.proyecto-item',
-		masonry: {
-			isFitWidth: true
-		}
-	});
-
-	$('.proyecto-filtros .btn').on( 'click', function() {
-		var filterValue = $(this).attr('data-filter');
-		proyectos_items.isotope({ filter: filterValue });
-	});
-
-	$('.counter').counterUp({
-		delay: 30,
-		time: 3000,
-	});
-
-	AOS.init();
-});
+function sleep(ms) {
+	var now = new Date().getTime();
+	while(new Date().getTime() < now + ms){} 
+}
