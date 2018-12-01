@@ -15,15 +15,17 @@
 		<div class="row">
 			<div class="col-md-6 my-2 text-center">
 				<img id="img-live" class="img-fluid img-thumbnail mb-2" src="{% static 'core/img/live.png' %}" alt="Live">
-				<button class="btn btn-success" onclick="on_off_streaming(this)" estado="off"><b>Iniciar</b></button>
-				<button class="btn btn-primary">No Sé</button>
-				<button class="btn btn-primary">Que</button>
-				<button class="btn btn-primary">Colocar</button>
-				<button class="btn btn-primary">En Estos</button>
-				<button class="btn btn-primary">Botones</button>
+				<div>
+					<button class="btn btn-success" onclick="on_off_streaming(this)" estado="off"><b>Iniciar</b></button>
+					<button class="btn btn-primary">No Sé</button>
+					<button class="btn btn-primary">Que</button>
+					<button class="btn btn-primary">Colocar</button>
+					<button class="btn btn-primary">En Estos</button>
+					<button class="btn btn-primary">Botones</button>
+				</div>
 			</div>
 			<div class="col-md-6 my-2">
-				<table class="table table-striped table-bordered table-hover table-sm">
+				<table id="tbl-placas" class="table table-striped table-bordered table-hover table-sm">
 					<thead>
 						<th>Fecha / Hora</th>
 						<th>Placa</th>
