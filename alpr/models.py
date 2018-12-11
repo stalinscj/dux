@@ -25,14 +25,18 @@ class Lector():
 	def iniciar(self, cam_socket):
 
 		if self.estado=='off':
-			self.estado = 'on'
-			placas_candidatas = []
-			tiempo_post_lectura = 1
+			self.estado           = 'on'
+			placas_candidatas     = []
+			tiempo_post_lectura   = 1
 			tiempo_ultima_lectura = 0
-			camara      = cv2.VideoCapture(0)
-			success     = True
+			# camara                = cv2.VideoCapture(0)
+			camara                = cv2.VideoCapture('/home/stalinscj/_dux_test/test/vehiculoTest/porton360.mp4')
+			success               = True
 			while self.estado=='on' and success==True:
 				success, frame = camara.read()
+
+				if not success:
+					break
 
 				if time.time() - tiempo_ultima_lectura > tiempo_post_lectura:
 					leyendo = False
@@ -102,7 +106,25 @@ class Lector():
 		else:
 			return False
 
+	def filtrar_placas(self, placas_candidatas):
+		flag = False
+		for placa in placas_candidatas:
+			if len(placa[0]) > 6:
+				flag = True
+				break
+
+		if flag:
+			print("\nAntes: "+str(len(placas_candidatas)))
+			for placa in placas_candidatas:
+				if len(placa[0]) < 7:
+					placas_candidatas.remove(placa)
+
+
+
 	def get_placa(self, placas_candidatas):
+
+		self.filtrar_placas(placas_candidatas)
+
 		max_confianza = 0
 
 		for i in range(0, len(placas_candidatas)):

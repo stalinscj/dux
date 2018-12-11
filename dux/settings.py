@@ -25,7 +25,7 @@ SECRET_KEY = '8)fe@qrp8l4l2$mo!+)#8)=(!^njcmyr=w+$3kzl)85&(=p(9)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,10 +77,15 @@ WSGI_APPLICATION = 'dux.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dux',
+        'USER': 'homestead',
+        'PASSWORD': 'secret',
+        'HOST': '192.168.10.10', 
+        'PORT': '3306',
+    }
 }
 
 
