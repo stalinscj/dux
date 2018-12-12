@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from . import consumers
+from .consumers import CamConsumer
 
 websocket_urlpatterns = [
-	url(r'^ws/camara/$', consumers.CamConsumer),
+	url(r'^ws/camara/$', CamConsumer),
 ]

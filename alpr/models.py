@@ -1,3 +1,4 @@
+from core.models import Alerta, Lectura, MatriculaSolicitada, Peaje
 from django.conf import settings
 # from django.db import models
 from openalpr import Alpr
@@ -45,8 +46,7 @@ class Lector():
 
 				if not leyendo and placas_candidatas:
 					placa = self.get_placa(placas_candidatas)
-					# self.guardar_placa(placa)
-					self.enviar_placa(placa, cam_socket)
+					self.procesar_envio(placa, cam_socket)
 					del placas_candidatas[:]
 
 				placa_candidata = self.buscar_placa(frame)
@@ -93,7 +93,7 @@ class Lector():
 				x2              = coordenadas[2]['x']
 				y2              = coordenadas[2]['y']
 				img_placa       = frame[y0:y2, x0:x2]
-				placa_candidata = (placa, confianza, img_placa)
+				placa_candidata = (placa, confianza, img_placa, frame)
 				cv2.rectangle(frame, (x0-5, y0-5), (x2+5, y2+5), (0,255,0), 3)
 
 				return placa_candidata
@@ -114,7 +114,6 @@ class Lector():
 				break
 
 		if flag:
-			print("\nAntes: "+str(len(placas_candidatas)))
 			for placa in placas_candidatas:
 				if len(placa[0]) < 7:
 					placas_candidatas.remove(placa)
@@ -136,11 +135,30 @@ class Lector():
 
 		return placa
 
-	def enviar_placa(self, placa, cam_socket):
+	def procesar_envio(self, placa, cam_socket):
+		placa_str      = placa[0]
+		placa_img      = placa[3]
+		placa_img_mini = placa[2]
+
+		peaje = Peaje.objects.get(pk=1)
+
+		lectura = Lectura.objects.create (
+			peaje       = peaje,
+			matricula   = placa_str,
+			direccion   = "Cd. Bolívar - Puerto Ordaz",
+			imagen      = self.img_to_base64(placa_img),
+			imagen_mini = self.img_to_base64(placa_img_mini)
+		)
+
+		solicitud = MatriculaSolicitada.objects.filter(matricula=placa_str, activo=True).first()
+		
+		if solicitud:
+			Alerta.nueva(solicitud, lectura)
+
 		cam_socket.send(text_data=json.dumps({
 			'tipo'    : 'tupla',
 			'fecha'   : time.strftime("%d/%m/%Y %H:%M:%S"),
-			'placa'   : placa[0],
-			'img_src' : self.img_to_base64(placa[2]),
+			'placa'   : placa_str,
+			'img_src' : self.img_to_base64(placa_img_mini),
 			'avisos'  : 0
 		}))

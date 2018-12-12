@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+	'api',
 	'channels',
 	'core',
 	'sockets',
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +132,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Channels
 ASGI_APPLICATION = 'dux.routing.application'
+
+# Django Rest Framework 
+REST_FRAMEWORK = {
+}
