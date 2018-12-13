@@ -32,9 +32,10 @@ class Lectura(models.Model):
 		return super(Lectura, self).save(*args, **kwargs)
 
 class Patrullero(models.Model):
+	cedula = models.CharField(max_length=10, verbose_name='Cédula')
 	nombre = models.CharField(max_length=100, verbose_name='Nombre')
-	mac    = models.CharField(max_length=100, verbose_name='Mac')
 	activo = models.BooleanField(verbose_name="Activo")
+	token  = models.CharField(max_length=250, verbose_name='Token')
 
 	class Meta:
 		ordering = ['nombre']
@@ -61,12 +62,15 @@ class Alerta(models.Model):
 	def nueva(solicitud, lectura):
 		push_service = FCMNotification(api_key="AIzaSyBCr-rmINKdZQUKT3rQmLolkeFX4iNaB7c")
 		registration_id = "e9X3dCVzXbg:APA91bHfnXfgPk38OtyWYTLDmLbpp9u60N2D5i8LybDEmstKf12IH8KzORm7WtWn7wzdKGshBY4ChcYQdrFCcZvHWX9UbR6LcSt8wsR3rOGhhrrsA6xMq1caCQ9GFzDxwH0HxY6LzwAv"
-		message_title = "Matrícula {} Solicitada".format(lectura.matricula)
-		message_body = "Esta matrícula pasó por el peaje {} con dirección {}".format(lectura.peaje, lectura.direccion)
-		result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body)
-		# print("\n\n")
-		# print(result)
-		# print("\n\n")
+		# message_title = "Matrícula {} Solicitada".format(lectura.matricula)
+		# message_body = "Esta matrícula pasó por el peaje {} con dirección {}".format(lectura.peaje, lectura.direccion)
+		# result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body)
+		msj ={"hola":55}
+		result = push_service.single_device_data_message(registration_id=registration_id, data_message=msj)
+		
+		print("\n\n")
+		print(result)
+		print("\n\n")
 
 		if result['success']==1:
 			alerta = Alerta.objects.create(lectura = lectura)
