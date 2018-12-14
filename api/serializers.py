@@ -1,9 +1,9 @@
-from core.models import Notificado
+from core.models import Patrullero
 from rest_framework import serializers
 
 
 # class NotificadoSerializer(serializers.HyperlinkedModelSerializer):
-class NotificadoSerializer(serializers.ModelSerializer):
+class PatrulleroSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = Notificado
-		fields = ('alerta', 'patrullero')
+		model = Patrullero
+		fields = ('nombre', 'cedula', 'activo', 'token')

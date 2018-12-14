@@ -32,9 +32,9 @@ class Lectura(models.Model):
 		return super(Lectura, self).save(*args, **kwargs)
 
 class Patrullero(models.Model):
-	cedula = models.CharField(max_length=10, verbose_name='Cédula')
+	cedula = models.CharField(max_length=10, unique=True, verbose_name='Cédula')
 	nombre = models.CharField(max_length=100, verbose_name='Nombre')
-	activo = models.BooleanField(verbose_name="Activo")
+	activo = models.BooleanField(default=False, verbose_name="Activo")
 	token  = models.CharField(max_length=250, verbose_name='Token')
 
 	class Meta:
@@ -42,10 +42,6 @@ class Patrullero(models.Model):
 
 	def __str__(self):
 		return self.nombre
-
-	def save(self, *args, **kwargs):
-		self.mac = self.mac.upper()
-		return super(Patrullero, self).save(*args, **kwargs)
 
 
 class Alerta(models.Model):
