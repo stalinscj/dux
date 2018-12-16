@@ -6,4 +6,4 @@ from rest_framework import serializers
 class PatrulleroSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Patrullero
-		fields = ('nombre', 'cedula', 'activo', 'token')
+		fields = ('id', 'nombre', 'cedula', 'activo', 'token')

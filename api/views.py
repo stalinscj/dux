@@ -31,7 +31,12 @@ class PatrulleroViewSet(viewsets.ModelViewSet):
 		pass
 
 	def update(self, request, pk=None):
-		pass
+		token = request.data.get("token")
+		patrullero = Patrullero.objects.filter(pk=pk)
+		patrullero.update(token=token)
+		serializer = PatrulleroSerializer(patrullero.first())
+		
+		return Response(serializer.data, status=status.HTTP_200_OK)
 
 	def partial_update(self, request, pk=None):
 		pass
