@@ -1,9 +1,10 @@
-from core.models import Patrullero
+from core.models import Alerta, Notificado, Patrullero
 from rest_framework import viewsets
-from .serializers import PatrulleroSerializer
+from .serializers import AlertaSerializer, NotificadoSerializer, PatrulleroSerializer
 from rest_framework import status
 from rest_framework.response import Response
-
+from collections import OrderedDict
+from django.utils import timezone
 
 class PatrulleroViewSet(viewsets.ModelViewSet):
 	serializer_class = PatrulleroSerializer
@@ -43,3 +44,65 @@ class PatrulleroViewSet(viewsets.ModelViewSet):
 
 	def destroy(self, request, pk=None):
 		pass
+
+class AlertaViewSet(viewsets.ModelViewSet):
+	serializer_class = AlertaSerializer
+	queryset = Alerta.objects.all().order_by('-id')
+
+	def list(self, request):
+		alertas = Alerta.objects.all()
+		serializer = AlertaSerializer(alertas, many=True)
+		return Response(serializer.data)
+
+
+	def retrieve(self, request, pk=None):
+		alerta = Alerta.objects.filter(pk=pk).first()
+		if alerta:
+
+			lectura = alerta.lectura
+			alerta_detalle = OrderedDict()
+			alerta_detalle['id'] = alerta.pk
+			alerta_detalle['fecha'] = timezone.localtime(alerta.fecha).strftime("%Y-%m-%d %H:%m:%S")
+			alerta_detalle['lectura_id'] = lectura.primary_key=True
+			alerta_detalle['peaje_id'] = lectura.peaje.pk
+			alerta_detalle['fecha_lectura'] = timezone.localtime(lectura.fecha).strftime("%Y-%m-%d %H:%m:%S")
+			alerta_detalle['matricula'] = lectura.matricula
+			alerta_detalle['direccion'] = lectura.direccion
+			alerta_detalle['imagen'] = lectura.imagen
+				
+			return Response(alerta_detalle, status=status.HTTP_200_OK)
+		else:
+			return Response({"detail": "No encontrado."}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+class NotificadoViewSet(viewsets.ModelViewSet):
+	serializer_class = NotificadoSerializer
+	queryset = Notificado.objects.all().order_by('-id')
+
+	def list(self, request):
+		notificados = Notificado.objects.all()
+		serializer = NotificadoSerializer(notificados, many=True)
+		return Response(serializer.data)
+
+
+	def update(self, request, pk=None):
+		data = request.data
+		if pk is not '0':
+			notificado = Notificado.objects.filter(pk=pk)
+		else:
+			idAlerta     = data["alerta_id"]
+			idPatrullero = data["patrullero_id"]
+			notificado = Notificado.objects.filter(alerta_id=idAlerta, patrullero_id=idPatrullero)
+
+		notificado.update(
+			entregada=True if (data["entregada"]=="true") else False,
+			alcanzado=True if (data["alcanzado"]=="true") else False,
+			atendida=True if (data["atendida"]=="true") else False,
+			fecha_entregada=data["fecha_entregada"],
+			fecha_atendida=data.get("fecha_atendida", None)
+		)
+
+		serializer = NotificadoSerializer(notificado.first())
+		
+		return Response(serializer.data, status=status.HTTP_200_OK)

@@ -57,12 +57,17 @@ class Alerta(models.Model):
 
 	def nueva(solicitud, lectura):
 		push_service = FCMNotification(api_key="AIzaSyBCr-rmINKdZQUKT3rQmLolkeFX4iNaB7c")
-		registration_id = "e9X3dCVzXbg:APA91bHfnXfgPk38OtyWYTLDmLbpp9u60N2D5i8LybDEmstKf12IH8KzORm7WtWn7wzdKGshBY4ChcYQdrFCcZvHWX9UbR6LcSt8wsR3rOGhhrrsA6xMq1caCQ9GFzDxwH0HxY6LzwAv"
+		registration_id = "dFxnUETLIlI:APA91bEBsD8x_1CcJOHY6lYOwcOM-oAbBddDPspzBClPV3AlVrgdFPUllQV_18cOEw_iaYvEJAhGXAfp_kZ2v5bCeNSU3DYvpsucLnGfW_HJPAbNwqvYb5ul7HTtyfri3aNnde7w9lSb"
 		# message_title = "Matrícula {} Solicitada".format(lectura.matricula)
 		# message_body = "Esta matrícula pasó por el peaje {} con dirección {}".format(lectura.peaje, lectura.direccion)
 		# result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body)
-		msj ={"hola":55}
-		result = push_service.single_device_data_message(registration_id=registration_id, data_message=msj)
+		mensaje = {
+			'alerta_id': 1,
+			'lectura_id': 305,
+			'fecha' : '2018-12-31 11:59:00'
+		}
+		
+		result = push_service.single_device_data_message(registration_id=registration_id, data_message=mensaje)
 		
 		print("\n\n")
 		print(result)
@@ -83,8 +88,8 @@ class Notificado(models.Model):
 	entregada       = models.BooleanField(default=False, verbose_name="Entregada")
 	alcanzado       = models.BooleanField(default=False, verbose_name="Alcanzado")
 	atendida        = models.BooleanField(default=False, verbose_name="Atendida")
-	fecha_entregada = models.DateTimeField(null=True, verbose_name='Fecha Entregada')
-	fecha_atendida  = models.DateTimeField(null=True, verbose_name='Fecha Atendida')
+	fecha_entregada = models.DateTimeField(null=True, blank=True, verbose_name='Fecha Entregada')
+	fecha_atendida  = models.DateTimeField(null=True, blank=True, verbose_name='Fecha Atendida')
 
 	class Meta:
 		ordering = ['-alerta']
