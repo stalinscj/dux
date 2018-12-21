@@ -71,10 +71,9 @@ class Alerta(models.Model):
 		registration_ids = []
 
 		patrulleros = Patrullero.objects.filter(activo=True)
-		print(patrulleros)
 		for patrullero in patrulleros:
 			registration_ids.append(patrullero.token)
-			
+
 		push_service = FCMNotification(api_key="AIzaSyBCr-rmINKdZQUKT3rQmLolkeFX4iNaB7c")
 		
 		result = push_service.multiple_devices_data_message(registration_ids=registration_ids, data_message=mensaje)
@@ -86,6 +85,8 @@ class Alerta(models.Model):
 			Alerta.objects.filter(pk=alerta.pk).delete()
 			print("\nError al enviar las notificaciones\n")
 			print(result)
+
+		return len(patrulleros)
 
 
 class Notificado(models.Model):

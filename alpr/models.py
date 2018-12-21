@@ -2,6 +2,7 @@ from core.models import Alerta, Lectura, MatriculaSolicitada, Peaje
 from django.conf import settings
 # from django.db import models
 from openalpr import Alpr
+import threading
 import base64
 import time
 import json
@@ -46,7 +47,7 @@ class Lector():
 
 				if not leyendo and placas_candidatas:
 					placa = self.get_placa(placas_candidatas)
-					self.procesar_envio(placa, cam_socket)
+					threading.Thread(target=self.procesar_envio, args=(placa, cam_socket,)).start()
 					del placas_candidatas[:]
 
 				placa_candidata = self.buscar_placa(frame)
@@ -140,7 +141,7 @@ class Lector():
 		placa_img      = placa[3]
 		placa_img_mini = placa[2]
 
-		peaje = Peaje.objects.get(pk=1)
+		peaje = Peaje.objects.filter().first()
 
 		lectura = Lectura.objects.create (
 			peaje       = peaje,
@@ -152,13 +153,14 @@ class Lector():
 
 		solicitud = MatriculaSolicitada.objects.filter(matricula=placa_str, activo=True).first()
 		
+		avisos = 0
 		if solicitud:
-			Alerta.nueva(solicitud, lectura)
+			avisos = Alerta.nueva(solicitud, lectura)
 
 		cam_socket.send(text_data=json.dumps({
 			'tipo'    : 'tupla',
 			'fecha'   : time.strftime("%d/%m/%Y %H:%M:%S"),
 			'placa'   : placa_str,
 			'img_src' : self.img_to_base64(placa_img_mini),
-			'avisos'  : 0
+			'avisos'  : avisos
 		}))
