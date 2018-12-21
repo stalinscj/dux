@@ -4,7 +4,9 @@ from pyfcm import FCMNotification
 
 class Peaje(models.Model):
 	nombre = models.CharField(max_length=100, verbose_name='Nombre')
-	# ciudad = models.CharField(max_length=100, verbose_name='Ciudad')
+	latitud = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Latitud', help_text="Puede conocer la latitud en Google Maps; Click Derecho -> ¿Qué hay aquí?")
+	longitud = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Longitud', help_text="Puede conocer la latitud en Google Maps; Click Derecho -> ¿Qué hay aquí?")
+	radio = models.DecimalField(max_digits=10, decimal_places=3, help_text="Indique el radio (en metros) de acción para el envío de notificaciones")
 
 	class Meta:
 		ordering = ['nombre']
@@ -56,30 +58,34 @@ class Alerta(models.Model):
 		return self.lectura.matricula
 
 	def nueva(solicitud, lectura):
-		push_service = FCMNotification(api_key="AIzaSyBCr-rmINKdZQUKT3rQmLolkeFX4iNaB7c")
-		registration_id = "dFxnUETLIlI:APA91bEBsD8x_1CcJOHY6lYOwcOM-oAbBddDPspzBClPV3AlVrgdFPUllQV_18cOEw_iaYvEJAhGXAfp_kZ2v5bCeNSU3DYvpsucLnGfW_HJPAbNwqvYb5ul7HTtyfri3aNnde7w9lSb"
-		# message_title = "Matrícula {} Solicitada".format(lectura.matricula)
-		# message_body = "Esta matrícula pasó por el peaje {} con dirección {}".format(lectura.peaje, lectura.direccion)
-		# result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body)
+		peaje = lectura.peaje
+		alerta = Alerta.objects.create(lectura = lectura)
+
 		mensaje = {
-			'alerta_id': 1,
-			'lectura_id': 305,
-			'fecha' : '2018-12-31 11:59:00'
+			'alerta_id': alerta.pk,
+			'latitud': str(peaje.latitud),
+			'longitud': str(peaje.longitud),
+			'radio': str(peaje.radio)
 		}
+
+		registration_ids = []
+
+		patrulleros = Patrullero.objects.filter(activo=True)
+		print(patrulleros)
+		for patrullero in patrulleros:
+			registration_ids.append(patrullero.token)
+			
+		push_service = FCMNotification(api_key="AIzaSyBCr-rmINKdZQUKT3rQmLolkeFX4iNaB7c")
 		
-		result = push_service.single_device_data_message(registration_id=registration_id, data_message=mensaje)
-		
-		print("\n\n")
-		print(result)
-		print("\n\n")
+		result = push_service.multiple_devices_data_message(registration_ids=registration_ids, data_message=mensaje)
 
 		if result['success']==1:
-			alerta = Alerta.objects.create(lectura = lectura)
-			patrulleros = Patrullero.objects.filter(activo=True)
 			for patrullero in patrulleros:
 			 	Notificado.objects.create(alerta=alerta, patrullero=patrullero) 
 		else:
-			print("\n\nError\n\n")
+			Alerta.objects.filter(pk=alerta.pk).delete()
+			print("\nError al enviar las notificaciones\n")
+			print(result)
 
 
 class Notificado(models.Model):
