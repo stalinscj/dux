@@ -32,7 +32,7 @@ class Lector():
 			tiempo_post_lectura   = 1
 			tiempo_ultima_lectura = 0
 			# camara                = cv2.VideoCapture(0)
-			camara                = cv2.VideoCapture('/home/stalinscj/_dux_test/test/vehiculoTest/porton360.mp4')
+			camara                = cv2.VideoCapture('/home/stalinscj/_dux_test/test/vehiculoTest/portonOriginalSinBorde_640x360.mp4')
 			success               = True
 			while self.estado=='on' and success==True:
 				success, frame = camara.read()
