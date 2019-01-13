@@ -83,10 +83,11 @@ class Alerta(models.Model):
 			 	Notificado.objects.create(alerta=alerta, patrullero=patrullero) 
 		else:
 			Alerta.objects.filter(pk=alerta.pk).delete()
+			alerta = None
 			print("\nError al enviar las notificaciones\n")
 			print(result)
 
-		return len(patrulleros)
+		return alerta
 
 
 class Notificado(models.Model):

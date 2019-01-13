@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, JsonResponse
 from configparser import ConfigParser
-from django.http import HttpResponse
-from .models import Peaje
+from .models import Peaje, Alerta
+from django.utils import timezone
 import os
 
 
@@ -76,3 +77,31 @@ def configurar_camara(request):
 	archivo.close()
 
 	return HttpResponse('success')
+
+
+def get_alerta_detalle(request):
+	alerta = get_object_or_404(Alerta, pk=request.POST.get('id', 0))
+
+	notificaciones = []
+
+	for notificacion in alerta.notificado_set.all():
+		notificaciones.append({
+			'id': notificacion.pk,
+			'patrullero': notificacion.patrullero.nombre,
+			'entregada': notificacion.entregada,
+			'alcanzado': notificacion.alcanzado,
+			'atendida': notificacion.atendida,
+			'fecha_entregada': timezone.localtime(notificacion.fecha_entregada).strftime("%d/%m/%Y %H:%m:%S"),
+			'fecha_atendida': timezone.localtime(notificacion.fecha_atendida).strftime("%d/%m/%Y %H:%m:%S") if notificacion.fecha_atendida else '',
+		})
+
+	response = {
+		'id_alerta': alerta.id,
+		'fecha_emision': timezone.localtime(alerta.fecha).strftime("%d/%m/%Y %H:%m:%S"),
+		'matricula': alerta.lectura.matricula,
+		'direccion': alerta.lectura.direccion, 
+		'imagen': alerta.lectura.imagen,
+		'notificaciones': notificaciones
+	}
+
+	return JsonResponse(response)

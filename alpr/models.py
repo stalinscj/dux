@@ -161,15 +161,19 @@ class Lector():
 		solicitud = MatriculaSolicitada.objects.filter(matricula=placa_str, activo=True).first()
 		
 		avisos = 0
+		idAlerta = ''
 		if solicitud:
-			avisos = Alerta.nueva(solicitud, lectura)
+			alerta = Alerta.nueva(solicitud, lectura)
+			idAlerta = alerta.pk
+			avisos = alerta.notificado_set().all().count()
 
 		cam_socket.send(text_data=json.dumps({
-			'tipo'    : 'tupla',
-			'fecha'   : time.strftime("%d/%m/%Y %H:%M:%S"),
-			'placa'   : placa_str,
-			'img_src' : self.img_to_base64(placa_img_mini),
-			'avisos'  : avisos
+			'tipo'      : 'tupla',
+			'fecha'     : time.strftime("%d/%m/%Y %H:%M:%S"),
+			'placa'     : placa_str,
+			'img_src'   : self.img_to_base64(placa_img_mini),
+			'avisos'    : avisos,
+			'alerta_id' : idAlerta
 		}))
 
 	def iniciar_config(self, cam_socket):
