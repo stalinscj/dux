@@ -22,3 +22,7 @@ urlpatterns = [
 	path('api/', include('api.urls')),
 	path('admin/', admin.site.urls),
 ]
+
+admin.site.site_header = "Administración de Dux"
+admin.site.site_title  = "Administración de Dux"
+admin.site.index_title = "Administración de Dux"

@@ -4,8 +4,8 @@ from pyfcm import FCMNotification
 
 class Peaje(models.Model):
 	nombre = models.CharField(max_length=100, verbose_name='Nombre')
+	longitud = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Longitud', help_text="Puede conocer la longitud en Google Maps; Click Derecho -> ¿Qué hay aquí?")
 	latitud = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Latitud', help_text="Puede conocer la latitud en Google Maps; Click Derecho -> ¿Qué hay aquí?")
-	longitud = models.DecimalField(max_digits=9, decimal_places=6, verbose_name='Longitud', help_text="Puede conocer la latitud en Google Maps; Click Derecho -> ¿Qué hay aquí?")
 	radio = models.DecimalField(max_digits=10, decimal_places=3, help_text="Indique el radio (en metros) de acción para el envío de notificaciones")
 
 	class Meta:
