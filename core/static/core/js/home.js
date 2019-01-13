@@ -41,6 +41,11 @@ function recibir(data) {
 }
 
 function on_off_streaming(btn){
+	if (configurado=='False') {
+		alert("El sistema no está configurado, vaya a Configuración.");
+		return;
+	}
+
 	var btnOnOff = $(btn);
 	
 	if (btnOnOff.attr('estado') == 'off'){

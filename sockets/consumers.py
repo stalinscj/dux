@@ -4,7 +4,6 @@ import threading
 import json
 
 
-
 class CamConsumer(WebsocketConsumer):
 	lector = None
 
@@ -13,10 +12,7 @@ class CamConsumer(WebsocketConsumer):
 
 		self.lector = Lector()
 
-		# self.lector.iniciar(self)
-
 	def disconnect(self, close_code):
-		# print("\n\nSe recibió desconexión del lciente...\n\n")
 		self.lector.detener(self)
 
 	def receive(self, text_data):
@@ -24,8 +20,20 @@ class CamConsumer(WebsocketConsumer):
 		
 		if streaming=='on':
 			threading.Thread(target=self.lector.iniciar, args=(self,)).start()
-			# self.lector.iniciar(self)
 
 		else:
 			threading.Thread(target=self.lector.detener, args=(self,)).start()
-			# self.lector.detener(self)
+
+class ConfigConsumer(WebsocketConsumer):
+	lector = None
+
+	def connect(self):
+		self.accept()
+
+		self.lector = Lector()
+
+		threading.Thread(target=self.lector.iniciar_config, args=(self,)).start()
+
+	def disconnect(self, close_code):
+		# print("\n\nSe recibió desconexión CONFIG del lciente...\n\n")
+		self.lector.terminar_config(self)

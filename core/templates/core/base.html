@@ -20,7 +20,7 @@
 
 <header>
 	<nav class="navbar navbar-dark navbar-expand-md " id="menu">
-		<a class="navbar-brand firma" href="{{ url_home }}#inicio">Dux</a>
+		<a class="navbar-brand firma" href="/#inicio">Dux</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -28,7 +28,7 @@
 		<div class="collapse navbar-collapse" id="navbarToggler">
 			<ul class="navbar-nav mr-0 ml-auto">
 				<li class="nav-item">
-					<a class="nav-link" href="{{ url_home }}">INICIO</a>
+					<a class="nav-link" href="{% url 'home' %}">INICIO</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{{ url_home }}">BÚSQUEDA</a>
@@ -37,10 +37,10 @@
 					<a class="nav-link" href="{{ url_home }}">MÓVILES</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="{{ url_home }}">CONFIGURACIÓN</a>
+					<a class="nav-link" href="{% url 'configuracion' %}">CONFIGURACIÓN</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="{{ url_home }}">AYUDA</a>
+					<a class="nav-link" href="#">AYUDA</a>
 				</li>
 			</ul>
 		</div>

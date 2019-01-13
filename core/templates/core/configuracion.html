@@ -1,0 +1,91 @@
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block title %}Dux | Configuración{% endblock title %}
+
+{% block url_blog %}{% url 'blog' %}{% endblock url_blog %}
+
+{% block content %}
+	<div class="container-fluid">
+		<h1 class="text-center">Configuración</h1>
+		<div class="row">
+			<div class="col-12 my-2 text-center">
+				<h2 class="text-left">Peaje</h2>
+				<table id="tbl-placas" class="table table-striped table-bordered table-hover table-sm">
+					<thead>
+						<th>Código</th>
+						<th>Nombre</th>
+						<th>Longitud</th>
+						<th>Latitud</th>
+						<th>Radio (mts)</th>
+						<th>Estado</th>
+						<th>Acción</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="align-middle">
+								<input id="txtIdPeaje" type="text" placeholder="Ingrese el ID" oninput="getPeaje()" value="{{peajeConfigurado}}">
+								<small class="form-text text-muted">Si no lo conoce puede verlo <a href="{% url 'admin:core_peaje_changelist' %}" target="_blank">aquí.</a>: </small>
+							</td>
+							<td id="nombrePeaje" class="align-middle"></td>
+							<td id="longitudPeaje" class="align-middle"></td>
+							<td id="latitudPeaje" class="align-middle"></td>
+							<td id="radioPeaje" class="align-middle"></td>
+							{% if peajeConfigurado %}
+								<td class="align-middle"><b id="estadoPeaje" class="text-success">Configurado</b></td>
+							{% else %}
+								<td class="align-middle"><b id="estadoPeaje" class="text-danger">No Configurado</b></td>
+							{% endif %}
+							<td class="align-middle">
+								<button class="btn btn-success" onclick="setPeaje()">Guardar</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 my-2 text-center">
+				<h2 class="text-left">Cámaras</h2>
+				<table id="tbl-placas" class="table table-striped table-bordered table-hover table-sm">
+					<thead>
+						<th>Código</th>
+						<th>Cámara</th>
+						<th>Dirección</th>
+						<th>Estado</th>
+						<th>Acción</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="align-middle">Cámara #1</td>
+							<td class="align-middle">
+								<img id="img-live"  width="200px" class="img-fluid img-thumbnail mb-2" src="{% static 'core/img/live.png' %}" alt="Live">
+							</td>
+							<td class="align-middle">
+								<input id="txtDireccionCamara" type="text" style="min-width: 250px" placeholder="Ciudad Origen - Ciudad Destino" value="{{ camaraConfigurada }}">
+							</td>
+							{% if camaraConfigurada %}
+								<td class="align-middle"><b id="estadoCamara" class="text-success">Configurado</b></td>
+							{% else %}
+								<td class="align-middle"><b id="estadoCamara" class="text-danger">No Configurado</b></td>
+							{% endif %}
+							<td class="align-middle text-center">
+								<button class="btn btn-success" onclick="setCamara()">Guardar</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<h1>{% csrf_token %}</h1>
+{% endblock content %}
+
+{% block custom_js %}
+	<script type="text/javascript">
+		var csrfToken = "{{ csrf_token }}";
+		var peajeValido = "{{ peajeConfigurado }}";
+	</script>
+	<script src="{% static 'core/js/configuracion.js' %}"></script>
+{% endblock custom_js %}

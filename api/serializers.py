@@ -1,4 +1,4 @@
-from core.models import Alerta, Lectura, Notificado, Patrullero
+from core.models import Alerta, Lectura, Notificado, Patrullero, Peaje
 from rest_framework import serializers
 
 class LecturaSerializer(serializers.ModelSerializer):
@@ -28,4 +28,10 @@ class PatrulleroSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Patrullero
 		fields = ('id', 'nombre', 'cedula', 'activo', 'token')
+
+class PeajeSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Peaje
+		fields = ('id', 'nombre', 'longitud', 'latitud', 'radio')
 

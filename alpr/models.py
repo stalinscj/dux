@@ -1,4 +1,5 @@
 from core.models import Alerta, Lectura, MatriculaSolicitada, Peaje
+from configparser import ConfigParser
 from django.conf import settings
 # from django.db import models
 from openalpr import Alpr
@@ -17,6 +18,8 @@ class Lector():
 
 	estado = None
 	alpr   = None
+
+	estado_config = None
 
 	def __init__(self):
 		self.estado = 'off'
@@ -141,12 +144,16 @@ class Lector():
 		placa_img      = placa[3]
 		placa_img_mini = placa[2]
 
-		peaje = Peaje.objects.filter().first()
+		config = ConfigParser()
+
+		config.read('dux/config.ini')
+
+		peaje = Peaje.objects.filter(pk=config.get('peaje', 'id')).first()
 
 		lectura = Lectura.objects.create (
 			peaje       = peaje,
 			matricula   = placa_str,
-			direccion   = "Cd. Bolívar - Puerto Ordaz",
+			direccion   = config.get('camaras', '0'),
 			imagen      = self.img_to_base64(placa_img),
 			imagen_mini = self.img_to_base64(placa_img_mini)
 		)
@@ -164,3 +171,25 @@ class Lector():
 			'img_src' : self.img_to_base64(placa_img_mini),
 			'avisos'  : avisos
 		}))
+
+	def iniciar_config(self, cam_socket):
+		self.estado_config = 'on'
+		camara = cv2.VideoCapture(0)
+		success = True
+		while self.estado_config=='on' and success==True:
+			success, frame = camara.read()
+
+			if not success:
+				break
+			cam_socket.send(text_data=json.dumps({
+				'img_src' : self.img_to_base64(frame)
+			}))
+
+	def terminar_config(self, cam_socket):
+		if self.estado_config=='on':
+			self.estado_config = 'off'
+			frame = cv2.imread(os.path.join(settings.STATIC_ROOT, 'core/img/live.png'))
+			time.sleep(2)
+			cam_socket.send(text_data=json.dumps({
+				'img_src': self.img_to_base64(frame)
+			}))

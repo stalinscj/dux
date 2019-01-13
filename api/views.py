@@ -1,6 +1,6 @@
-from core.models import Alerta, Notificado, Patrullero
+from core.models import Alerta, Notificado, Patrullero, Peaje
 from rest_framework import viewsets
-from .serializers import AlertaSerializer, NotificadoSerializer, PatrulleroSerializer
+from .serializers import AlertaSerializer, NotificadoSerializer, PatrulleroSerializer, PeajeSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from collections import OrderedDict
@@ -106,3 +106,21 @@ class NotificadoViewSet(viewsets.ModelViewSet):
 		serializer = NotificadoSerializer(notificado.first())
 		
 		return Response(serializer.data, status=status.HTTP_200_OK)
+
+class PeajeViewSet(viewsets.ModelViewSet):
+	serializer_class = PeajeSerializer
+	queryset = Peaje.objects.all().order_by('-id')
+
+	def list(self, request):
+		peajes = Peaje.objects.all()
+		serializer = PeajeSerializer(peajes, many=True)
+		return Response(serializer.data)
+
+	def retrieve(self, request, pk=None):
+		peaje = Peaje.objects.filter(pk=pk).first()
+		if peaje:
+			serializer = PeajeSerializer(peaje)
+
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		else:
+			return Response({"detail": "No encontrado."}, status=status.HTTP_404_NOT_FOUND)
