@@ -19,7 +19,7 @@
 <body>
 
 <header>
-	<nav class="navbar navbar-dark navbar-expand-md " id="menu">
+	<nav class="navbar navbar-dark navbar-expand-lg " id="menu">
 		<a class="navbar-brand firma" href="/#inicio">Dux</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -30,11 +30,18 @@
 				<li class="nav-item">
 					<a class="nav-link" href="{% url 'home' %}">INICIO</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ url_home }}">BÚSQUEDA</a>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">REPORTES</a>
+					<div class="dropdown-menu" >
+						<a class="dropdown-item" href="{% url 'notificaciones' %}">Notificaciones</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="{% url 'lecturas' %}">Lecturas</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="{% url 'patrulleros' %}">Patrulleros</a>
+					</div>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="{{ url_home }}">MÓVILES</a>
+					<a class="nav-link" href="{% url 'admin:index' %}">ADMINISTRACIÓN</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{% url 'configuracion' %}">CONFIGURACIÓN</a>

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 	'api',
 	'channels',
 	'core',
+	'reportes',
 	'sockets',
 	'django.contrib.admin',
 	'django.contrib.auth',

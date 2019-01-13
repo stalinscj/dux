@@ -2,6 +2,16 @@ body {
 	background: #FFF;
 }
 
+.dropdown-menu {
+	background-color: #1E5799 !important;
+}
+
+.dropdown-item {
+	color: #FFF;
+	font-weight: bold;
+}
+
+
 .firma{
 	font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial, cursive;
 	color: #FFF;
