@@ -1,6 +1,6 @@
-from core.models import Alerta, Notificado, Patrullero, Peaje
+from core.models import Alerta, Notificacion, Patrullero, Peaje
 from rest_framework import viewsets
-from .serializers import AlertaSerializer, NotificadoSerializer, PatrulleroSerializer, PeajeSerializer
+from .serializers import AlertaSerializer, NotificacionSerializer, PatrulleroSerializer, PeajeSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from collections import OrderedDict
@@ -76,26 +76,26 @@ class AlertaViewSet(viewsets.ModelViewSet):
 
 
 
-class NotificadoViewSet(viewsets.ModelViewSet):
-	serializer_class = NotificadoSerializer
-	queryset = Notificado.objects.all().order_by('-id')
+class NotificacionViewSet(viewsets.ModelViewSet):
+	serializer_class = NotificacionSerializer
+	queryset = Notificacion.objects.all().order_by('-id')
 
 	def list(self, request):
-		notificados = Notificado.objects.all()
-		serializer = NotificadoSerializer(notificados, many=True)
+		notificaciones = Notificacion.objects.all()
+		serializer = NotificacionSerializer(notificaciones, many=True)
 		return Response(serializer.data)
 
 
 	def update(self, request, pk=None):
 		data = request.data
 		if pk is not '0':
-			notificado = Notificado.objects.filter(pk=pk)
+			notificacion = Notificacion.objects.filter(pk=pk)
 		else:
 			idAlerta     = data["alerta_id"]
 			idPatrullero = data["patrullero_id"]
-			notificado = Notificado.objects.filter(alerta_id=idAlerta, patrullero_id=idPatrullero)
+			notificacion = Notificacion.objects.filter(alerta_id=idAlerta, patrullero_id=idPatrullero)
 
-		notificado.update(
+		notificacion.update(
 			entregada=True if (data["entregada"]=="true") else False,
 			alcanzado=True if (data["alcanzado"]=="true") else False,
 			atendida=True if (data["atendida"]=="true") else False,
@@ -103,7 +103,7 @@ class NotificadoViewSet(viewsets.ModelViewSet):
 			fecha_atendida=data.get("fecha_atendida", None)
 		)
 
-		serializer = NotificadoSerializer(notificado.first())
+		serializer = NotificacionSerializer(notificacion.first())
 		
 		return Response(serializer.data, status=status.HTTP_200_OK)
 

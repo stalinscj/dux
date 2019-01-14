@@ -47,9 +47,9 @@ class Patrullero(models.Model):
 
 
 class Alerta(models.Model):
-	lectura     = models.ForeignKey(Lectura, on_delete=models.PROTECT, verbose_name='Lectura')
-	fecha       = models.DateTimeField(default=now, verbose_name='Fecha')
-	notificados = models.ManyToManyField(Patrullero, through='Notificado')
+	lectura        = models.ForeignKey(Lectura, on_delete=models.PROTECT, verbose_name='Lectura')
+	fecha          = models.DateTimeField(default=now, verbose_name='Fecha')
+	notificaciones = models.ManyToManyField(Patrullero, through='Notificacion')
 
 	class Meta:
 		ordering = ['-fecha']
@@ -80,7 +80,7 @@ class Alerta(models.Model):
 
 		if result['success']==1:
 			for patrullero in patrulleros:
-			 	Notificado.objects.create(alerta=alerta, patrullero=patrullero) 
+			 	Notificacion.objects.create(alerta=alerta, patrullero=patrullero) 
 		else:
 			Alerta.objects.filter(pk=alerta.pk).delete()
 			alerta = None
@@ -90,7 +90,7 @@ class Alerta(models.Model):
 		return alerta
 
 
-class Notificado(models.Model):
+class Notificacion(models.Model):
 	alerta          = models.ForeignKey(Alerta, on_delete=models.PROTECT, verbose_name='Alerta')
 	patrullero      = models.ForeignKey(Patrullero, on_delete=models.PROTECT, verbose_name='Patrullero')
 	entregada       = models.BooleanField(default=False, verbose_name="Entregada")
@@ -101,6 +101,8 @@ class Notificado(models.Model):
 
 	class Meta:
 		ordering = ['-alerta']
+		verbose_name='notificación'
+		verbose_name_plural = 'notificaciones'
 
 	def __str__(self):
 		return "{} - {}".format(self.alerta, self.patrullero)

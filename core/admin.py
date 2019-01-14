@@ -1,4 +1,4 @@
-from .models import Alerta, Lectura, MatriculaSolicitada, Notificado, Patrullero, Peaje
+from .models import Alerta, Lectura, MatriculaSolicitada, Notificacion, Patrullero, Peaje
 from django.conf.locale.es import formats as es_formats
 from django.contrib import admin
 
@@ -6,8 +6,8 @@ es_formats.DATETIME_FORMAT = "d/m/Y H:i:s"
 
 # Register your models here.
 class PeajeAdmin(admin.ModelAdmin):
-	search_fields = ('nombre',)
-	list_display = ( 'nombre', 'longitud', 'latitud', 'radio' )
+	search_fields = ('nombre', )
+	list_display = ( 'id', 'nombre', 'longitud', 'latitud', 'radio' )
 	ordering = ( 'nombre',)
 
 
@@ -30,7 +30,7 @@ class AlertaAdmin(admin.ModelAdmin):
 	ordering = ( '-fecha',)
 
 
-class NotificadoAdmin(admin.ModelAdmin):
+class NotificacionAdmin(admin.ModelAdmin):
 	search_fields = ('peaje', 'matricula', 'patrullero', 'fecha_emitida', 'fecha_entregada', 'fecha_atendida', )
 	list_display = ( 'id', 'peaje', 'fecha_emitida', 'matricula', 'patrullero', 'entregada', 'alcanzado', 'atendida', 'fecha_entregada', 'fecha_atendida', )
 	ordering = ( '-id', )
@@ -57,5 +57,5 @@ admin.site.register(Peaje, PeajeAdmin)
 admin.site.register(Alerta, AlertaAdmin)
 admin.site.register(Lectura, LecturaAdmin)
 admin.site.register(MatriculaSolicitada, MatriculaSolicitadaAdmin)
-admin.site.register(Notificado, NotificadoAdmin)
+admin.site.register(Notificacion, NotificacionAdmin)
 admin.site.register(Patrullero, PatrulleroAdmin)

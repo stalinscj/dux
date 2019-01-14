@@ -1,4 +1,4 @@
-from core.models import Alerta, Lectura, Notificado, Patrullero, Peaje
+from core.models import Alerta, Lectura, Notificacion, Patrullero, Peaje
 from rest_framework import serializers
 
 class LecturaSerializer(serializers.ModelSerializer):
@@ -15,15 +15,15 @@ class AlertaSerializer(serializers.ModelSerializer):
 		model = Alerta
 		fields = ('id', 'lectura_id', 'fecha')
 
-class NotificadoSerializer(serializers.ModelSerializer):
+class NotificacionSerializer(serializers.ModelSerializer):
 
 	class Meta:
-		model = Notificado
+		model = Notificacion
 		fields = ('id', 'alerta_id', 'patrullero_id', 'entregada', 'alcanzado', 'atendida', 'fecha_entregada', 'fecha_atendida')
 
 		
 
-# class NotificadoSerializer(serializers.HyperlinkedModelSerializer):
+# class NotificacionSerializer(serializers.HyperlinkedModelSerializer):
 class PatrulleroSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Patrullero

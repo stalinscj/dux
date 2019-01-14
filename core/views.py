@@ -84,7 +84,7 @@ def get_alerta_detalle(request):
 
 	notificaciones = []
 
-	for notificacion in alerta.notificado_set.all():
+	for notificacion in alerta.notificacion_set.all():
 		notificaciones.append({
 			'id': notificacion.pk,
 			'patrullero': notificacion.patrullero.nombre,

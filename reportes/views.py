@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from core.models import Lectura, Notificado, Patrullero
+from core.models import Lectura, Notificacion, Patrullero
 
 def notificaciones(request):
-	notificaciones = Notificado.objects.all()
+	notificaciones = Notificacion.objects.all()
 	return render(request, 'reportes/notificaciones.html', {'notificaciones': notificaciones})
 
 
@@ -16,8 +16,8 @@ def patrulleros(request):
 	patrulleros = []
 
 	for patrullero in patrulleros_raw:
-		patrullero.alcanzado = patrullero.notificado_set.filter(alcanzado=True).all().count()
-		patrullero.atendido = patrullero.notificado_set.filter(atendida=True).all().count()
+		patrullero.alcanzado = patrullero.notificacion_set.filter(alcanzado=True).all().count()
+		patrullero.atendido = patrullero.notificacion_set.filter(atendida=True).all().count()
 		patrullero.eficacia = str(round(patrullero.atendido/patrullero.alcanzado, 2)*100) + " %"
 
 		patrulleros.append(patrullero)

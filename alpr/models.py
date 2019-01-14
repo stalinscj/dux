@@ -165,7 +165,7 @@ class Lector():
 		if solicitud:
 			alerta = Alerta.nueva(solicitud, lectura)
 			idAlerta = alerta.pk
-			avisos = alerta.notificado_set().all().count()
+			avisos = alerta.notificacion_set.all().count()
 
 		cam_socket.send(text_data=json.dumps({
 			'tipo'      : 'tupla',
