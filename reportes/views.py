@@ -18,7 +18,7 @@ def patrulleros(request):
 	for patrullero in patrulleros_raw:
 		patrullero.alcanzado = patrullero.notificacion_set.filter(alcanzado=True).all().count()
 		patrullero.atendido = patrullero.notificacion_set.filter(atendida=True).all().count()
-		patrullero.eficacia = str(round(patrullero.atendido/patrullero.alcanzado, 2)*100) + " %"
+		patrullero.eficacia = "{:.2f}".format(100*patrullero.atendido/patrullero.alcanzado) + " %" if patrullero.alcanzado else "0.00 %"
 
 		patrulleros.append(patrullero)
 

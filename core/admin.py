@@ -32,7 +32,7 @@ class AlertaAdmin(admin.ModelAdmin):
 
 class NotificacionAdmin(admin.ModelAdmin):
 	search_fields = ('peaje', 'matricula', 'patrullero', 'fecha_emitida', 'fecha_entregada', 'fecha_atendida', )
-	list_display = ( 'id', 'peaje', 'fecha_emitida', 'matricula', 'patrullero', 'entregada', 'alcanzado', 'atendida', 'fecha_entregada', 'fecha_atendida', )
+	list_display = ( 'fecha_emitida', 'peaje', 'matricula', 'patrullero', 'entregada', 'alcanzado', 'atendida', 'fecha_entregada', 'fecha_atendida', )
 	ordering = ( '-id', )
 	list_filter = ('entregada', 'alcanzado', 'atendida', )
 
@@ -48,8 +48,8 @@ class NotificacionAdmin(admin.ModelAdmin):
 
 class MatriculaSolicitadaAdmin(admin.ModelAdmin):
 	search_fields = ('matricula', 'motivo', 'activo', )
-	list_display = ('matricula', 'fecha_solicitada', 'motivo', 'activo', )
-	ordering = ('matricula', )
+	list_display = ('id', 'matricula', 'fecha_solicitada', 'motivo', 'activo', )
+	ordering = ('id', )
 	list_filter = ('activo', )
 
 
