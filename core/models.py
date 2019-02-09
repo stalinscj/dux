@@ -22,6 +22,7 @@ class Lectura(models.Model):
 	direccion   = models.CharField(max_length=50, verbose_name='Dirección')
 	imagen      = models.TextField(verbose_name='Img')
 	imagen_mini = models.TextField(verbose_name='Img (min)')
+	video       = models.CharField(max_length=255, verbose_name='Video')
 
 	class Meta:
 		ordering = ['-fecha']

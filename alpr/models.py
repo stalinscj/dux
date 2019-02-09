@@ -3,10 +3,12 @@ from configparser import ConfigParser
 from django.conf import settings
 # from django.db import models
 from openalpr import Alpr
+import numpy as np
 import threading
 import base64
 import time
 import json
+import uuid
 import cv2
 import os
 
@@ -34,9 +36,12 @@ class Lector():
 			placas_candidatas     = []
 			tiempo_post_lectura   = 1
 			tiempo_ultima_lectura = 0
-			# camara                = cv2.VideoCapture(0)
+			# camara              = cv2.VideoCapture(0)
 			camara                = cv2.VideoCapture('/home/stalinscj/_dux_test/test/vehiculoTest/portonOriginalSinBorde_640x360.mp4')
+			
+			leyendo               = False
 			success               = True
+			# video = cv2.VideoWriter("output.avi", cv2.VideoWriter_fourcc(*'MJPG'), 20, (640,360))
 			while self.estado=='on' and success==True:
 				success, frame = camara.read()
 
@@ -44,13 +49,26 @@ class Lector():
 					break
 
 				if time.time() - tiempo_ultima_lectura > tiempo_post_lectura:
+					if leyendo==True:
+						video.release()
+						threading.Thread(target=self.guardar_video, args=(video_nombre,)).start()
 					leyendo = False
+					
+
 				else:
+					if leyendo==False:
+						video_nombre = "media/{0}.mp4".format(uuid.uuid4().int & (1<<64)-1)
+						#MP4V
+						# 0x7634706d
+						# video = cv2.VideoWriter(video_nombre, cv2.VideoWriter_fourcc(*'MP4V'), 20, (640,360))
+						video = cv2.VideoWriter(video_nombre, 0x7634706d, 20, (640,360))
+					
 					leyendo = True
+					video.write(frame)
 
 				if not leyendo and placas_candidatas:
 					placa = self.get_placa(placas_candidatas)
-					threading.Thread(target=self.procesar_envio, args=(placa, cam_socket,)).start()
+					threading.Thread(target=self.procesar_envio, args=(placa, cam_socket, video_nombre,)).start()
 					del placas_candidatas[:]
 
 				placa_candidata = self.buscar_placa(frame)
@@ -63,6 +81,8 @@ class Lector():
 					'tipo'    : 'frame',
 					'img_src' : self.img_to_base64(frame)
 				}))
+
+			
 
 	def detener(self, cam_socket):
 		if self.estado=='on':
@@ -139,7 +159,7 @@ class Lector():
 
 		return placa
 
-	def procesar_envio(self, placa, cam_socket):
+	def procesar_envio(self, placa, cam_socket, video_nombre):
 		placa_str      = placa[0]
 		placa_img      = placa[3]
 		placa_img_mini = placa[2]
@@ -155,7 +175,8 @@ class Lector():
 			matricula   = placa_str,
 			direccion   = config.get('camaras', '0'),
 			imagen      = self.img_to_base64(placa_img),
-			imagen_mini = self.img_to_base64(placa_img_mini)
+			imagen_mini = self.img_to_base64(placa_img_mini),
+			video       = video_nombre
 		)
 
 		solicitud = MatriculaSolicitada.objects.filter(matricula=placa_str, activo=True).first()
@@ -197,3 +218,8 @@ class Lector():
 			cam_socket.send(text_data=json.dumps({
 				'img_src': self.img_to_base64(frame)
 			}))
+
+	def guardar_video(self, video_nombre):
+		os.system("ffmpeg -i {0}.mp4 -loglevel quiet -an -vcodec libx264 -crf 23 {0}tmp.mp4".format(video_nombre[:-4]))
+		os.system("rm -f "+video_nombre)
+		os.system("mv {0}tmp.mp4 {0}.mp4".format(video_nombre[:-4]))

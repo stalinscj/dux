@@ -7,6 +7,11 @@
 {% block custom_css %}
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.4/b-flash-1.5.4/datatables.min.css"/>
 	{# <link rel="stylesheet" href="//cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css"> #}
+	<style type="text/css">
+		.img-video:hover {
+			cursor: pointer;
+		}
+	</style>
 {% endblock custom_css %}
 
 {% block content %}
@@ -21,7 +26,7 @@
 						<th>Fecha</th>
 						<th>Matrícula</th>
 						<th>Dirección</th>
-						<th>Imagen</th>
+						<th>Video</th>
 						<th>Imagen Mini</th>
 					</thead>
 					<tbody>
@@ -32,7 +37,7 @@
 								<td class="align-middle">{{ lectura.fecha|date:"d/m/Y H:i:s" }}</td>
 								<td class="align-middle">{{ lectura.matricula }}</td>
 								<td class="align-middle">{{ lectura.direccion }}</td>
-								<td class="align-middle"><img width="80px" src="{{ lectura.imagen }}" alt="Imagen"></td>
+								<td class="align-middle img-video" onclick="mostrarVideo('{{ lectura.video }}', '{{ lectura.matricula }}', '{{ lectura.direccion }}', &quot;{{ lectura.fecha|date:'d/m/Y H:i:s' }}&quot;)" title="Click para ver el Video"><img width="80px" src="{{ lectura.imagen }}" alt="Imagen" ></td>
 								<td class="align-middle"><img src="{{ lectura.imagen_mini }}" alt="Imagen"></td>
 							</tr>
 						{% endfor %}
@@ -42,9 +47,31 @@
 		</div>
 	</div>
 	<br>
+
+	<!-- Modal -->
+	<div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-titulo"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body text-center">
+					<video id="video" controls autoplay="autoplay" width="640" height="360" ></video>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock content %}
 
 {% block custom_js %}
 	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.4/b-flash-1.5.4/datatables.min.js"></script>
 	<script src="{% static 'reportes/js/datatables.js' %}"></script>
+	<script type="text/javascript"> var media_url = "//{{ request.META.HTTP_HOST }}"; </script>
+	<script src="{% static 'reportes/js/video.js' %}"></script>
 {% endblock custom_js %}

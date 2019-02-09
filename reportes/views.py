@@ -1,5 +1,5 @@
-from django.shortcuts import render
 from core.models import Lectura, Notificacion, Patrullero
+from django.shortcuts import render
 
 def notificaciones(request):
 	notificaciones = Notificacion.objects.all()
